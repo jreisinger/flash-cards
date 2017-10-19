@@ -1,8 +1,19 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -s
 use strict;
 use warnings;
 
 use Term::ANSIColor qw(:constants);
+
+our ( $n, $h );    # command line switches
+
+if ($h) {
+    print << "EOF";
+Usage: $0 [-h] [-n=N] <topic_file>
+  -h    this help
+  -n=N  give me N terms (default: all)
+EOF
+    exit 0;
+}
 
 my $sep = '--->';
 my %definition;
@@ -16,6 +27,7 @@ while (<>) {
 my %count = ( wrong => 0, right => 0 );
 
 for my $expr ( keys %definition ) {
+    last if $n and $count{wrong} + $count{right} == $n;
     print BOLD, BLUE, $expr, RESET, " $sep ";
     chomp( my $ans = <STDIN> );
     if ( $ans eq $definition{$expr} ) {
@@ -29,7 +41,6 @@ for my $expr ( keys %definition ) {
 
 print "-" x 80, "\n";
 print << "EOF";
-Results:
 [-] wrong: $count{wrong}
 [+] right: $count{right}
 EOF
