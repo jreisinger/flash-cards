@@ -2,6 +2,8 @@
 use strict;
 use warnings;
 
+use Term::ANSIColor qw(:constants);
+
 my $sep = '--->';
 my %definition;
 
@@ -14,14 +16,14 @@ while (<>) {
 my %count = ( wrong => 0, right => 0 );
 
 for my $expr ( keys %definition ) {
-    print $expr, " $sep ";
+    print BOLD, BLUE, $expr, RESET, " $sep ";
     chomp( my $ans = <STDIN> );
     if ( $ans eq $definition{$expr} ) {
         $count{right}++;
-        print "right\n";
+        print GREEN, "Right!\n", RESET;
     } else {
         $count{wrong}++;
-        print "wrong, it's: '$definition{$expr}'\n";
+        print "Not really, it's: '$definition{$expr}'\n";
     }
 }
 
