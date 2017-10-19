@@ -1,0 +1,3 @@
+Sample usage
+
+    ./practice python

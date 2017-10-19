@@ -1,0 +1,2 @@
+class X(Y) ---> Make a class named X that is-a Y.
+class X(object): def __init__(self, J) ---> class X has-a __init__ that takes self and J parameters.

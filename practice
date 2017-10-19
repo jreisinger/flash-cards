@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my %definition;
+
+while (<>) {
+    chomp;
+    my ( $expr, $def ) = split /\s*--->\s*/;
+    $definition{$expr} = $def;
+}
+
+for my $expr (keys %definition) {
+    print $expr, " -> ";
+    chomp(my $ans = <STDIN>);
+    if ($ans eq $definition{$expr}) {
+        print "right\n";
+    } else {
+        print "wrong\n";
+    }
+}
