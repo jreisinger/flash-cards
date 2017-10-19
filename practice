@@ -2,18 +2,19 @@
 use strict;
 use warnings;
 
+my $sep = '--->';
 my %definition;
 
 while (<>) {
     chomp;
-    my ( $expr, $def ) = split /\s*--->\s*/;
+    my ( $expr, $def ) = split /\s*$sep\s*/;
     $definition{$expr} = $def;
 }
 
 my %count = ( wrong => 0, right => 0 );
 
 for my $expr ( keys %definition ) {
-    print $expr, " -> ";
+    print $expr, " $sep ";
     chomp( my $ans = <STDIN> );
     if ( $ans eq $definition{$expr} ) {
         $count{right}++;
