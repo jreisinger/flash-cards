@@ -1,3 +1,3 @@
-Sample usage
-
-    ./practice python
+```
+./practice -h
+```

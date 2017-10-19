@@ -8,9 +8,13 @@ our ( $n, $h );    # command line switches
 
 if ($h) {
     print << "EOF";
-Usage: $0 [-h] [-n=N] <topic_file>
-  -h    this help
-  -n=N  give me N terms (default: all)
+$0 [-h] [-n=N] topic/<file>
+    -h    this help
+    -n=N  give me N terms (default: all)
+
+Examples:
+    ./practice topic/python topic/security
+    ./practice -n=5 topic/*
 EOF
     exit 0;
 }
