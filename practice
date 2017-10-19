@@ -6,6 +6,7 @@ use Term::ANSIColor qw(:constants);
 
 our ( $n, $h );    # command line switches
 
+# Help message...
 if ($h) {
     print << "EOF";
 $0 [-h] [-n=N] topic/<file>
@@ -22,32 +23,44 @@ EOF
 my $sep = '--->';
 my %definition;
 
+# Read in the terms and their definitions...
 while (<>) {
     chomp;
-    my ( $expr, $def ) = split /\s*$sep\s*/;
-    $definition{$expr} = $def;
+    my ( $term, $def ) = split /\s*$sep\s*/;
+    $definition{$term} = $def;
 }
 
-my %count = ( wrong => 0, right => 0 );
+my %answers = ( wrong => 0, right => 0 );
 
-for my $expr ( keys %definition ) {
-    last if $n and $count{wrong} + $count{right} == $n;
-    next if $expr =~ /^\s*#/;
+for my $term ( keys %definition ) {
 
-    print BOLD, BLUE, $expr, RESET, " $sep ";
+    # Skip sub-topics (comments)...
+    next if $term =~ /^\s*#/;
 
+    # Give a term and get an answer...
+    print BOLD, BLUE, $term, RESET, " $sep ";
     chomp( my $ans = <STDIN> );
-    if ( $ans eq $definition{$expr} ) {
-        $count{right}++;
+
+    # Provide a hint on empty answer...
+    unless ($ans) {
+        print "It's: '$definition{$term}'\n";
+        redo;
+    }
+
+    # Evaluate the answer...
+    if ( $ans eq $definition{$term} ) {
+        $answers{right}++;
         print GREEN, "Right!\n", RESET;
     } else {
-        $count{wrong}++;
-        print "Not really, it's: '$definition{$expr}'\n";
+        $answers{wrong}++;
+        print "Nope, it's: '$definition{$term}'\n";
     }
+
+    last if $n and $answers{wrong} + $answers{right} >= $n;
 }
 
 print "-" x 80, "\n";
 print << "EOF";
-[-] wrong: $count{wrong}
-[+] right: $count{right}
+[-] wrong: $answers{wrong}
+[+] right: $answers{right}
 EOF
