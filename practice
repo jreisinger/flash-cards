@@ -10,12 +10,23 @@ while (<>) {
     $definition{$expr} = $def;
 }
 
-for my $expr (keys %definition) {
+my %count = ( wrong => 0, right => 0 );
+
+for my $expr ( keys %definition ) {
     print $expr, " -> ";
-    chomp(my $ans = <STDIN>);
-    if ($ans eq $definition{$expr}) {
+    chomp( my $ans = <STDIN> );
+    if ( $ans eq $definition{$expr} ) {
+        $count{right}++;
         print "right\n";
     } else {
-        print "wrong\n";
+        $count{wrong}++;
+        print "wrong, it's: '$definition{$expr}'\n";
     }
 }
+
+print "-" x 80, "\n";
+print << "EOF";
+Results:
+[-] wrong: $count{wrong}
+[+] right: $count{right}
+EOF
