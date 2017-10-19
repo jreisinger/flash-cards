@@ -28,7 +28,10 @@ my %count = ( wrong => 0, right => 0 );
 
 for my $expr ( keys %definition ) {
     last if $n and $count{wrong} + $count{right} == $n;
+    next if $expr =~ /^\s*#/;
+
     print BOLD, BLUE, $expr, RESET, " $sep ";
+
     chomp( my $ans = <STDIN> );
     if ( $ans eq $definition{$expr} ) {
         $count{right}++;
