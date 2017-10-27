@@ -5,19 +5,21 @@ use warnings;
 use Term::ANSIColor qw(:constants);
 use Text::Fuzzy;
 
-our ( $n, $h );    # command line switches (-s)
-$|++;              # don't buffer output
+our ( $n, $h, $d );    # command line switches (-s)
+$d = 10;               # default edit distance
+$|++;                  # don't buffer output
 
 # Help message...
 if ($h) {
     print << "EOF";
-$0 [-h] [-n=N] topic/<file>
+$0 [-h] [-n=N] [-d=N] topic/<file>
     -h    this help
     -n=N  give me N terms (default: all)
+    -d=N  max tolerated edit distance in answer (default: $d)
 
 Examples:
     ./practice topic/python topic/security
-    ./practice -n=5 topic/*
+    ./practice -n=3 topic/*
 EOF
     exit 0;
 }
@@ -48,7 +50,7 @@ for my $term ( keys %definition ) {
     # Evaluate the answer...
     my $tf       = Text::Fuzzy->new($ans);
     my $distance = $tf->distance( $definition{$term} );
-    if ( $distance <= 15 ) {
+    if ( $distance <= $d ) {
         $answers{right}++;
         print GREEN, "Right! (distance: $distance)\n", RESET;
     } else {
