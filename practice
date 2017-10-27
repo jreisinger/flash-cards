@@ -48,7 +48,7 @@ for my $term ( keys %definition ) {
     # Evaluate the answer...
     my $tf       = Text::Fuzzy->new($ans);
     my $distance = $tf->distance( $definition{$term} );
-    if ( $distance <= 5 ) {
+    if ( $distance <= 15 ) {
         $answers{right}++;
         print GREEN, "Right! (distance: $distance)\n", RESET;
     } else {
@@ -73,7 +73,7 @@ sub show_hide {
 
     # Show the string...
     print "It's: '$string'";
-    select( undef, undef, undef, ( 0.3 * $len ) );
+    select( undef, undef, undef, ( 0.2 * $len ) );
 
     # Hide the string...
     print chr(8) for 1 .. ( $len + 8 );
