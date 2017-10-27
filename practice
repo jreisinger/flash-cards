@@ -4,7 +4,8 @@ use warnings;
 
 use Term::ANSIColor qw(:constants);
 
-our ( $n, $h );    # command line switches
+our ( $n, $h );    # command line switches (-s)
+$|++;              # don't buffer output
 
 # Help message...
 if ($h) {
@@ -20,22 +21,18 @@ EOF
     exit 0;
 }
 
+# Read in the terms and their definitions...
 my $sep = '--->';
 my %definition;
-
-# Read in the terms and their definitions...
 while (<>) {
     chomp;
     my ( $term, $def ) = split /\s*$sep\s*/;
     $definition{$term} = $def;
 }
 
+# Let's practice...
 my %answers = ( wrong => 0, right => 0 );
-
 for my $term ( keys %definition ) {
-
-    # Skip sub-topics (comments)...
-    next if $term =~ /^\s*#/;
 
     # Give a term and get an answer...
     print BOLD, BLUE, $term, RESET, " $sep ";
@@ -43,7 +40,7 @@ for my $term ( keys %definition ) {
 
     # Provide a hint on empty answer...
     unless ($ans) {
-        print "It's: '$definition{$term}'\n";
+        show_hide( $definition{$term} );
         redo;
     }
 
@@ -56,11 +53,27 @@ for my $term ( keys %definition ) {
         print "Nope, it's: '$definition{$term}'\n";
     }
 
+    # Finish if we had enough terms...
     last if $n and $answers{wrong} + $answers{right} >= $n;
 }
 
+# Print out summary...
 print "-" x 80, "\n";
 print << "EOF";
 [-] wrong: $answers{wrong}
 [+] right: $answers{right}
 EOF
+
+sub show_hide {
+    my $string = shift;
+    my $len    = length $string;
+
+    # Show the string...
+    print "It's: '$string'";
+    select( undef, undef, undef, ( 0.3 * $len ) );
+
+    # Hide the string...
+    print chr(8) for 1 .. ( $len + 8 );
+    print " "    for 1 .. ( $len + 8 );
+    print chr(8) for 1 .. ( $len + 8 );
+}
