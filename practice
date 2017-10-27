@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Term::ANSIColor qw(:constants);
+use Text::Fuzzy;
 
 our ( $n, $h );    # command line switches (-s)
 $|++;              # don't buffer output
@@ -45,12 +46,14 @@ for my $term ( keys %definition ) {
     }
 
     # Evaluate the answer...
-    if ( $ans eq $definition{$term} ) {
+    my $tf       = Text::Fuzzy->new($ans);
+    my $distance = $tf->distance( $definition{$term} );
+    if ( $distance <= 5 ) {
         $answers{right}++;
-        print GREEN, "Right!\n", RESET;
+        print GREEN, "Right! (distance: $distance)\n", RESET;
     } else {
         $answers{wrong}++;
-        print "Nope, it's: '$definition{$term}'\n";
+        print "Nope (distance: $distance). It's: '$definition{$term}'\n";
     }
 
     # Finish if we had enough terms...
